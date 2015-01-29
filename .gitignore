@@ -1,0 +1,12 @@
+# backup/temporary files
+*~
+\#*#
+
+# build objects
+*.[ao]
+*.so
+*.dll
+*.class
+
+# other
+*.log
