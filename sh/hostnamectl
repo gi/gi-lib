@@ -1,0 +1,7 @@
+#!/usr/bin/env sh
+
+newname=$1
+oldname=$(hostname)
+hostnamectl set-hostname --static ${newname}
+(($? != 0)) && echo 'error: set-hostname failed' >&2 && exit 1
+sed -i~ "/${oldname}/ { s/${oldname}/${newname}/g }" /etc/hosts

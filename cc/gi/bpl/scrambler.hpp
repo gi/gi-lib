@@ -11,16 +11,24 @@
 #ifndef GI_LIBCXX_BPL_SCRAMBLER_HPP_INCLUDED_
 #define GI_LIBCXX_BPL_SCRAMBLER_HPP_INCLUDED_
 
-#include <gi/bpl/bitarray.hpp>
+#include <gi/bpl/bitset.hpp>
 
 namespace gi
 {
 
+  class scrambler_config
+  {
+  private:
+
+    std::size_t length;
+    std::size_t fill;
+  };
+
   template <typename Block, typename Allocator>
-  class scrambler
+  class dynamic_scrambler
   {
   public:
-    typedef bitarray<Block, Allocator> bits_type;
+    typedef dynamic_bitset<Block, Allocator> bits_type;
 
     void scramble(bits_type * bits);
     void descramble(bits_type * bits);
