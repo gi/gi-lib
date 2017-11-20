@@ -10,19 +10,68 @@
 import collections
 import itertools
 
+
 #==============================================================================
 # Dictionary
 #==============================================================================
 
-class Dictionary(dict):
-    
-    __keyfn = lambda obj: obj
-    
-    def __init__(self, key=__keyfn):
-        self._keyfn = key
+def dictionary(*args, **kwargs):
+    """Creates a new Dictionary."""
+    return Dictionary(*args, **kwargs)
 
-    def __getitem__(self, obj):
-        return super(Dictionary, self).__getitem__(self._keyfn(obj))
+
+class Dictionary(dict):
+    """A dictionary object that does not throw a key error
+    and allows for dot operator dereferencing instead of square brackets.
+    """
+
+    def __init__(self, *args, **kwargs):
+        """Constructor.
+        Args:
+            kwargs - key/value pairs to populate this Dictionary.
+        """
+        super(Dictionary, self).__init__(*args, **kwargs)
+        # for arg in args:
+        #     if isinstance(arg, dict):
+        #         kwargs.update(arg)
+        self.update(self)
+
+    @staticmethod
+    def convert(x):
+        if isinstance(x, dict):
+            return Dictionary(x)
+        if isinstance(x, (list, tuple)):
+            return map(Dictionary.convert, x)
+        return x
+
+    def update(self, other=None, **kwargs):
+        """Update the dictionary with the key/value pairs from `other`,
+        overwriting existing keys.
+
+        Accepts another dictionary object or an iterable of key/value pairs
+        (as tuples or other iterables of length two).
+        If keyword arguments are specified, the dictionary is then updated with
+        those key/value pairs.
+        """
+        other = dict(other) if other is not None else {}
+        other.update(kwargs)
+        items = ((k, Dictionary.convert(v)) for k, v in other.iteritems())
+        super(Dictionary, self).update(items)
+
+    def __setitem__(self, key, value):
+        """Sets the key/value pair, converting any nested dictionaries.
+        Args:
+            key - Key to set.
+            value - Value to set for the provided key.
+        """
+        value = Dictionary.convert(value)
+        super(Dictionary, self).__setitem__(key, value)
+
+    __getitem__ = dict.get
+    __getattr__ = __getitem__
+    __setattr__ = __setitem__
+    __delattr__ = dict.__delitem__
+
 
 #==============================================================================
 # Stack
@@ -32,10 +81,11 @@ def stack(iterable=[]):
     s = Stack()
     for obj in iterable:
         s.push(obj)
-    return Stack()
+    return s
+
 
 class Stack(collections.Sequence):
-    
+
     def __init__(self):
         self._container = []
 
@@ -70,12 +120,14 @@ class Stack(collections.Sequence):
     def clear(self):
         self._container.clear()
 
+
 #==============================================================================
 # Deque
 #==============================================================================
 
-def deque(**kwargs):
+def deque(*args, **kwargs):
     return Deque(**kwargs)
+
 
 class Deque(collections.deque):
 
@@ -90,42 +142,35 @@ class Deque(collections.deque):
     def back(self):
         return self[-1]
 
-    def pop_front(self):
-        return super(Deque, self).popleft()
-
-    def pop_back(self):
-        return super(Deque, self).pop()
+    pop_front = collections.deque.popleft
+    pop_back = collections.deque.pop
 
     def push_front(self, obj):
-        if len(self) == self.maxlen > 0:
-            rv = self.back
-        elif self.maxlen == 0:
-            rv = obj
-        else:
-            rv = None
+        if self.maxlen == 0:
+            return obj
+        rv = self.back if len(self) == self.maxlen else None
         super(Deque, self).appendleft(obj)
         return rv
 
     appendleft = push_front
 
     def push_back(self, obj):
-        if len(self) == self.maxlen > 0:
-            rv = self.front
-        elif self.maxlen == 0:
-            rv = obj
-        else:
-            rv = None
+        if self.maxlen == 0:
+            return obj
+        rv = self.front if len(self) == self.maxlen else None
         super(Deque, self).append(obj)
         return rv
 
     append = push_back
 
+
 #==============================================================================
 # Queue
 #==============================================================================
 
-def queue(**kwargs):
+def queue(*args, **kwargs):
     return Queue(**kwargs)
+
 
 class Queue(collections.Sequence):
 
@@ -153,19 +198,12 @@ class Queue(collections.Sequence):
         return self._container.pop_front()
 
     def push(self, obj):
-        if len(self) == self.maxlen > 0:
-            rv = self.front
-        elif self.maxlen == 0:
-            rv = obj
-        else:
-            rv = None
-        self._container.push_back()
-        return rv
+        return self._container.push_back(obj)
+
 
 #==============================================================================
 # LookaheadBuffer
 #==============================================================================
-
 
 def lookahead(func):
     """Returns a lookahead buffer enabling peeking into an iterator."""
@@ -197,5 +235,4 @@ class LookaheadBuffer(collections.Iterable):
         if self._last is None:
             self._last = self._iterator.next()
         return self._last
-
 
