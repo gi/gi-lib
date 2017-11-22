@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #
 # This file echoes color codes to the terminal to demonstrate what's available.
 # Each line is the color code of one forground color (default + 16 escapes),
@@ -7,21 +7,21 @@
 # See https://en.wikipedia.org/wiki/ANSI_escape_code
 #
 
-TEXT='gYw'   # The test text
-SPACER=' '
-FGS='m 1m 30m 1;30m 31m 1;31m 32m 1;32m 33m 1;33m 34m 1;34m 35m 1;35m 36m 1;36m 37m 1;37m'
-BGS='40m 41m 42m 43m 44m 45m 46m 47m'
+text='gYw'   # The test text
+SPC=' '
+FGS='0 1 30 1;30 31 1;31 32 1;32 33 1;33 34 1;34 35 1;35 36 1;36 37 1;37'
+BGS='40 41 42 43 44 45 46 47'
 
 echo -en "\n              "
 for bg in $BGS; do
-  echo -n "   $bg  "
+  echo -n "${SPC}  ${bg}m  "
 done
 echo
 
-for FG in $FGS; do
-  printf "%6s \033[$FG  $TEXT  " $FG
-  for BG in $BGS; do
-    echo -en "${SPACER}\033[$FG\033[$BG  $TEXT  \033[0m"
+for fg in $FGS; do
+  printf "%6s \033[${fg}m  $text  " "${fg}m"
+  for bg in $BGS; do
+    echo -en "${SPC}\033[${fg}m\033[${bg}m  $text  \033[0m"
   done
   echo
 done
