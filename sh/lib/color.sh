@@ -1,47 +1,75 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 # Terminal Control: Color Escape Codes
+#
+# Select Graphic Rendition codes
 
-tpt0="$(tput sgr0)"  # default
-
-# Foreground
-tptfgk="$(tput setaf 0)"  # black
-tptfgr="$(tput setaf 1)"  # red
-tptfgg="$(tput setaf 2)"  # green
-tptfgy="$(tput setaf 3)"  # yellow
-tptfgb="$(tput setaf 4)"  # blue
-tptfgm="$(tput setaf 5)"  # magenta
-tptfgc="$(tput setaf 6)"  # cyan
-tptfgw="$(tput setaf 7)"  # white
-
-# Foreground (intense)
-tptfgki="$(tput setaf 8)"  # black (intense)
-tptfgri="$(tput setaf 9)"  # red (intense)
-tptfggi="$(tput setaf 10)"  # green (intense)
-tptfgyi="$(tput setaf 11)"  # yellow (intense)
-tptfgbi="$(tput setaf 12)"  # blue (intense)
-tptfgmi="$(tput setaf 13)"  # magenta (intense)
-tptfgci="$(tput setaf 14)"  # cyan (intense)
-tptfgwi="$(tput setaf 15)"  # white (intense)
-
-# Background
-tptbgk="$(tput setab 0)"  # black
-tptbgr="$(tput setab 1)"  # red
-tptbgg="$(tput setab 2)"  # green
-tptbgy="$(tput setab 3)"  # yellow
-tptbgb="$(tput setab 4)"  # blue
-tptbgm="$(tput setab 5)"  # magenta
-tptbgc="$(tput setab 6)"  # cyan
-tptbgw="$(tput setab 7)"  # white
-
-# Background (intense)
-tptbgki="$(tput setab 8)"  # black (intense)
-tptbgri="$(tput setab 9)"  # red (intense)
-tptbggi="$(tput setab 10)"  # green (intense)
-tptbgyi="$(tput setab 11)"  # yellow (intense)
-tptbgbi="$(tput setab 12)"  # blue (intense)
-tptbgmi="$(tput setab 13)"  # magenta (intense)
-tptbgci="$(tput setab 14)"  # cyan (intense)
-tptbgwi="$(tput setab 15)"  # white (intense)
+color() {
+  attr="$1"; shift
+  case "$attr" in
+    reset)
+      # reset color attributes
+      tput sgr0 ;;
+    fg | bg)
+      # set foreground/background
+      case "$attr" in
+        fg) attr=setaf ;;
+        bg) attr=setab ;;
+      esac
+      color="$1"; shift
+      case "$color" in
+        [0-9]*) ;;
+        # normal intensity
+        k | black) color=0 ;;
+        r | red) color=1 ;;
+        g | green) color=2 ;;
+        y | yellow) color=3 ;;
+        b | blue) color=4 ;;
+        m | magenta) color=5 ;;
+        c | cyan) color=6 ;;
+        w | white) color=7 ;;
+        # bright intensity
+        k+ | bright-black | grey | gray) color=8 ;;
+        r+ | bright-red) color=9 ;;
+        g+ | bright-green) color=10 ;;
+        y+ | bright-yellow) color=11 ;;
+        b+ | bright-blue) color=12 ;;
+        m+ | bright-magenta) color=13 ;;
+        c+ | bright-cyan) color=14 ;;
+        w+ | bright-white) color=15 ;;
+        *)
+          echo "error: unknown color descriptor '$color'" >&2
+          return 1
+          ;;
+      esac
+      tput "$attr" "$color"
+      ;;
+    bold)
+      tput bold ;;
+    dim)
+      tput dim ;;
+    rev | reverse)
+      tput rev ;;
+    blink)
+      tput blink ;;
+    ul | underline)
+      option="$1"; shift
+      case "$option" in
+        1 | on)
+          tput smul ;;
+        0 | off)
+          tput rmul ;;
+        *)
+          echo "error: unknown option '$option'" >&2
+          return 1
+          ;;
+      esac
+      ;;
+    *)
+      echo "error: unknown attribute '$attr'" >&2
+      return 1
+      ;;
+  esac
+}
 
 # Styles
 tptbold="$(tput bold)"  # bold

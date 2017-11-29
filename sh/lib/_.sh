@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 
-file-dir () {
+realdir () {
   local file=$1
   local dir
   # resolve until no longer a symlink
@@ -15,8 +15,8 @@ file-dir () {
   echo "$dir"
 }
 
-GI_SHLIB_DIR="$(file-dir "${BASH_SOURCE[0]}")"
+GI_SHLIB_DIR="$(realdir "${BASH_SOURCE[0]}")"
 
-gi-import () {
+gi_import () {
   source "${GI_SHLIB_DIR}/$1.sh"
 }
