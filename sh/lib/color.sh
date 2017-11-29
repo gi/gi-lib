@@ -71,12 +71,3 @@ color() {
   esac
 }
 
-# Styles
-tptbold="$(tput bold)"  # bold
-tptdim="$(tput dim)"  # dim
-tptul1="$(tput smul)"  # underline (on)
-tptul0="$(tput rmul)"  # underline (off)
-tptrev="$(tput rev)"  # reverse
-tptblink="$(tput blink)"  # blink
-tptso1="$(tput smso)"  # standout (on)
-tptso0="$(tput rmso)"  # standout (off)
