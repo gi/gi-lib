@@ -7,8 +7,8 @@ color() {
   attr="$1"; shift
   case "$attr" in
     reset)
-      # reset color attributes
-      tput sgr0 ;;
+      tput sgr0
+      ;;
     fg | bg)
       # set foreground/background
       case "$attr" in
@@ -44,13 +44,17 @@ color() {
       tput "$attr" "$color"
       ;;
     bold)
-      tput bold ;;
+      tput bold
+      ;;
     dim)
-      tput dim ;;
+      tput dim
+      ;;
     rev | reverse)
-      tput rev ;;
+      tput rev
+      ;;
     blink)
-      tput blink ;;
+      tput blink
+      ;;
     ul | underline)
       option="$1"; shift
       case "$option" in

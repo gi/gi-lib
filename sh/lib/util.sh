@@ -1,7 +1,7 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 
 
-cd-up () {
+cdup () {
   local depth=$1
   [ -z "${depth}" ] && depth=1
   while ((depth-- > 0)); do
