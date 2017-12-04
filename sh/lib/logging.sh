@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 
-gi_import colors
-gi_import cursor
+gi import color
+gi import cursor
 
 GI_LIB_LOGGING=
 
