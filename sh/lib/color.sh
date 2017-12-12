@@ -55,8 +55,21 @@ color() {
     blink)
       tput blink
       ;;
+    so | standout)
+      option="${1:-}"; shift
+      case "$option" in
+        1 | on)
+          tput smso ;;
+        0 | off)
+          tput rmso ;;
+        *)
+          echo "error: unknown option '$option'" >&2
+          return 1
+          ;;
+      esac
+      ;;
     ul | underline)
-      option="$1"; shift
+      option="${1:-}"; shift
       case "$option" in
         1 | on)
           tput smul ;;
