@@ -24,6 +24,12 @@ cursor() {
     pos)
       # set the cursor position: row col
       tput cup $1 $2 ;;
+    row | posv)
+      # set the vertical position (row)
+      tput vpa $1 ;;
+    col | posh)
+      # set the horizontal position (column)
+      tput hpa $1 ;;
     mvb | mvl | left)
       # move left/backwards
       tput cub ${1:-1} ;;
@@ -42,6 +48,12 @@ cursor() {
     mvll | last)
       # move to lower left, last row & first column (if no cup)
       tput ll ;;
+    cr)
+      # carriage return
+      tput cr ;;
+    nl)
+      # new line
+      tput nel ;;
 
     # Visibility
 
